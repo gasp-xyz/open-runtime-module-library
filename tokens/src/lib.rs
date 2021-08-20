@@ -194,7 +194,7 @@ impl<Balance: Saturating + Copy + Ord> AccountData<Balance> {
 decl_storage! {
 	trait Store for Module<T: Trait> as Tokens {
 		/// The total issuance of a token type.
-		pub TotalIssuance get(fn total_issuance): map hasher(twox_64_concat) T::CurrencyId => T::Balance; 
+		pub TotalIssuance get(fn total_issuance): map hasher(twox_64_concat) T::CurrencyId => T::Balance;
 
 		/// Any liquidity locks of a token type under an account.
 		/// NOTE: Should only be accessed when setting, changing and freeing a lock.
@@ -633,6 +633,8 @@ impl<T: Trait> MultiReservableCurrency<T::AccountId> for Module<T> {
 	}
 
 	/// Slash from reserved balance, returning the amount actually slashed.
+	/// This should not be called directly. Doing so would cause an
+	/// inconsistency with total_issuance
 	///
 	/// Is a no-op if the value to be slashed is zero.
 	fn slash_reserved(currency_id: Self::CurrencyId, who: &T::AccountId, value: Self::Balance) -> Self::Balance {
