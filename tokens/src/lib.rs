@@ -632,8 +632,7 @@ impl<T: Trait> MultiReservableCurrency<T::AccountId> for Module<T> {
 		Self::ensure_can_withdraw(currency_id, who, value).is_ok()
 	}
 
-	/// Slash from reserved balance, returning any amount that was unable to be
-	/// slashed.
+	/// Slash from reserved balance, returning the amount actually slashed.
 	///
 	/// Is a no-op if the value to be slashed is zero.
 	fn slash_reserved(currency_id: Self::CurrencyId, who: &T::AccountId, value: Self::Balance) -> Self::Balance {
@@ -644,8 +643,7 @@ impl<T: Trait> MultiReservableCurrency<T::AccountId> for Module<T> {
 		let reserved_balance = Self::reserved_balance(currency_id, who);
 		let actual = reserved_balance.min(value);
 		Self::set_reserved_balance(currency_id, who, reserved_balance - actual);
-		<TotalIssuance<T>>::mutate(currency_id, |v| *v -= actual);
-		value - actual
+		actual
 	}
 
 	fn reserved_balance(currency_id: Self::CurrencyId, who: &T::AccountId) -> Self::Balance {
@@ -900,7 +898,7 @@ where
 
 	fn slash_reserved(who: &T::AccountId, value: Self::Balance) -> (Self::NegativeImbalance, Self::Balance) {
 		let actual = Module::<T>::slash_reserved(GetCurrencyId::get(), who, value);
-		(Self::NegativeImbalance::zero(), actual)
+		(Self::NegativeImbalance::new(actual), actual)
 	}
 
 	fn reserved_balance(who: &T::AccountId) -> Self::Balance {
@@ -1134,7 +1132,7 @@ where
 		value: Self::Balance,
 	) -> (Self::NegativeImbalance, Self::Balance) {
 		let actual = Module::<T>::slash_reserved(currency_id, who, value);
-		(MultiTokenNegativeImbalance::zero(currency_id), actual)
+		(MultiTokenNegativeImbalance::new(currency_id, actual), actual)
 	}
 
 	fn reserved_balance(currency_id: T::CurrencyId, who: &T::AccountId) -> Self::Balance {
