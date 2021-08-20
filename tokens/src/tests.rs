@@ -148,7 +148,7 @@ fn slash_reserved_should_work() {
 			assert_eq!(Tokens::slash_reserved(TEST_TOKEN_ID, &ALICE, 100), 50);
 			assert_eq!(Tokens::free_balance(TEST_TOKEN_ID, &ALICE), 50);
 			assert_eq!(Tokens::reserved_balance(TEST_TOKEN_ID, &ALICE), 0);
-			assert_eq!(Tokens::total_issuance(TEST_TOKEN_ID), 150);
+			assert_eq!(Tokens::total_issuance(TEST_TOKEN_ID), 200);
 		});
 }
 
@@ -809,7 +809,7 @@ fn currency_adapter_slashing_reserved_balance_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let _ = TreasuryCurrencyAdapter::deposit_creating(&TREASURY_ACCOUNT, 111);
 		assert_ok!(TreasuryCurrencyAdapter::reserve(&TREASURY_ACCOUNT, 111));
-		assert_eq!(TreasuryCurrencyAdapter::slash_reserved(&TREASURY_ACCOUNT, 42).1, 0);
+		assert_eq!(TreasuryCurrencyAdapter::slash_reserved(&TREASURY_ACCOUNT, 42).1, 42);
 		assert_eq!(TreasuryCurrencyAdapter::reserved_balance(&TREASURY_ACCOUNT), 69);
 		assert_eq!(TreasuryCurrencyAdapter::free_balance(&TREASURY_ACCOUNT), 0);
 		assert_eq!(TreasuryCurrencyAdapter::total_issuance(), 69);
@@ -821,7 +821,7 @@ fn currency_adapter_slashing_incomplete_reserved_balance_should_work() {
 	ExtBuilder::default().build().execute_with(|| {
 		let _ = TreasuryCurrencyAdapter::deposit_creating(&TREASURY_ACCOUNT, 111);
 		assert_ok!(TreasuryCurrencyAdapter::reserve(&TREASURY_ACCOUNT, 42));
-		assert_eq!(TreasuryCurrencyAdapter::slash_reserved(&TREASURY_ACCOUNT, 69).1, 27);
+		assert_eq!(TreasuryCurrencyAdapter::slash_reserved(&TREASURY_ACCOUNT, 69).1, 42);
 		assert_eq!(TreasuryCurrencyAdapter::free_balance(&TREASURY_ACCOUNT), 69);
 		assert_eq!(TreasuryCurrencyAdapter::reserved_balance(&TREASURY_ACCOUNT), 0);
 		assert_eq!(TreasuryCurrencyAdapter::total_issuance(), 69);
