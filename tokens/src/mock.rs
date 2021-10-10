@@ -14,11 +14,12 @@ use sp_std::cell::RefCell;
 
 pub type AccountId = AccountId32;
 pub type CurrencyId = u32;
-pub type Balance = u64;
+pub type Balance = u128;
+pub type Amount = i128;
 
-pub const DOT: CurrencyId = 1;
-pub const BTC: CurrencyId = 2;
-pub const ETH: CurrencyId = 3;
+pub const DOT: CurrencyId = 0;
+pub const BTC: CurrencyId = 1;
+pub const ETH: CurrencyId = 2;
 pub const ALICE: AccountId = AccountId32::new([0u8; 32]);
 pub const BOB: AccountId = AccountId32::new([1u8; 32]);
 pub const TREASURY_ACCOUNT: AccountId = AccountId32::new([2u8; 32]);
@@ -209,7 +210,7 @@ parameter_types! {
 impl Config for Runtime {
 	type Event = Event;
 	type Balance = Balance;
-	type Amount = i64;
+	type Amount = Amount;
 	type CurrencyId = CurrencyId;
 	type WeightInfo = ();
 	type ExistentialDeposits = ExistentialDeposits;
@@ -234,22 +235,24 @@ construct_runtime!(
 );
 
 pub struct ExtBuilder {
-	endowed_accounts: Vec<(AccountId, CurrencyId, Balance)>,
+	tokens_endowment: Vec<(AccountId, CurrencyId, Balance)>,
+	created_tokens_for_staking: Vec<(AccountId, CurrencyId, Balance)>,
 	treasury_genesis: bool,
 }
 
 impl Default for ExtBuilder {
 	fn default() -> Self {
 		Self {
-			endowed_accounts: vec![],
+			tokens_endowment: vec![],
+			created_tokens_for_staking: vec![],
 			treasury_genesis: false,
 		}
 	}
 }
 
 impl ExtBuilder {
-	pub fn balances(mut self, endowed_accounts: Vec<(AccountId, CurrencyId, Balance)>) -> Self {
-		self.endowed_accounts = endowed_accounts;
+	pub fn balances(mut self, tokens_endowment: Vec<(AccountId, CurrencyId, Balance)>) -> Self {
+		self.tokens_endowment = tokens_endowment;
 		self
 	}
 
@@ -268,7 +271,8 @@ impl ExtBuilder {
 			.unwrap();
 
 		tokens::GenesisConfig::<Runtime> {
-			endowed_accounts: self.endowed_accounts,
+			tokens_endowment: self.tokens_endowment,
+			created_tokens_for_staking: self.created_tokens_for_staking,
 		}
 		.assimilate_storage(&mut t)
 		.unwrap();
