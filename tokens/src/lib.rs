@@ -1111,15 +1111,15 @@ where
 	type NegativeImbalance = MultiTokenNegativeImbalance<T>;
 
 	fn total_balance(currency_id: T::CurrencyId, who: &T::AccountId) -> Self::Balance {
-		Module::<T>::total_balance(currency_id, who)
+		Pallet::<T>::total_balance(currency_id, who)
 	}
 
 	fn can_slash(currency_id: T::CurrencyId, who: &T::AccountId, value: Self::Balance) -> bool {
-		Module::<T>::can_slash(currency_id, who, value)
+		Pallet::<T>::can_slash(currency_id, who, value)
 	}
 
 	fn total_issuance(currency_id: T::CurrencyId) -> Self::Balance {
-		Module::<T>::total_issuance(currency_id)
+		Pallet::<T>::total_issuance(currency_id)
 	}
 
 	fn minimum_balance(_currency_id: T::CurrencyId) -> Self::Balance {
@@ -1155,7 +1155,7 @@ where
 	}
 
 	fn free_balance(currency_id: T::CurrencyId, who: &T::AccountId) -> Self::Balance {
-		Module::<T>::free_balance(currency_id, who)
+		Pallet::<T>::free_balance(currency_id, who)
 	}
 
 	fn ensure_can_withdraw(
@@ -1165,7 +1165,7 @@ where
 		_reasons: WithdrawReasons,
 		_new_balance: Self::Balance,
 	) -> DispatchResult {
-		Module::<T>::ensure_can_withdraw(currency_id, who, amount)
+		Pallet::<T>::ensure_can_withdraw(currency_id, who, amount)
 	}
 
 	fn transfer(
@@ -1187,20 +1187,20 @@ where
 			return (MultiTokenNegativeImbalance::zero(currency_id), value);
 		}
 
-		let account = Module::<T>::accounts(who, currency_id);
+		let account = Pallet::<T>::accounts(who, currency_id);
 		let free_slashed_amount = account.free.min(value);
 		let mut remaining_slash = value - free_slashed_amount;
 
 		// slash free balance
 		if !free_slashed_amount.is_zero() {
-			Module::<T>::set_free_balance(currency_id, who, account.free - free_slashed_amount);
+			Pallet::<T>::set_free_balance(currency_id, who, account.free - free_slashed_amount);
 		}
 
 		// slash reserved balance
 		if !remaining_slash.is_zero() {
 			let reserved_slashed_amount = account.reserved.min(remaining_slash);
 			remaining_slash -= reserved_slashed_amount;
-			Module::<T>::set_reserved_balance(currency_id, who, account.reserved - reserved_slashed_amount);
+			Pallet::<T>::set_reserved_balance(currency_id, who, account.reserved - reserved_slashed_amount);
 			(
 				Self::NegativeImbalance::new(currency_id, free_slashed_amount + reserved_slashed_amount),
 				remaining_slash,
@@ -1218,10 +1218,10 @@ where
 		if value.is_zero() {
 			return Ok(MultiTokenPositiveImbalance::zero(currency_id));
 		}
-		let new_total = Module::<T>::free_balance(currency_id, who)
+		let new_total = Pallet::<T>::free_balance(currency_id, who)
 			.checked_add(&value)
 			.ok_or(Error::<T>::TotalIssuanceOverflow)?;
-		Module::<T>::set_free_balance(currency_id, who, new_total);
+		Pallet::<T>::set_free_balance(currency_id, who, new_total);
 
 		Ok(Self::PositiveImbalance::new(currency_id, value))
 	}
@@ -1245,8 +1245,8 @@ where
 		if value.is_zero() {
 			return Ok(MultiTokenNegativeImbalance::zero(currency_id));
 		}
-		Module::<T>::ensure_can_withdraw(currency_id, who, value)?;
-		Module::<T>::set_free_balance(currency_id, who, Module::<T>::free_balance(currency_id, who) - value);
+		Pallet::<T>::ensure_can_withdraw(currency_id, who, value)?;
+		Pallet::<T>::set_free_balance(currency_id, who, Pallet::<T>::free_balance(currency_id, who) - value);
 
 		Ok(Self::NegativeImbalance::new(currency_id, value))
 	}
@@ -1278,7 +1278,7 @@ where
 	T: Trait,
 {
 	fn can_reserve(currency_id: T::CurrencyId, who: &T::AccountId, value: Self::Balance) -> bool {
-		Module::<T>::can_reserve(currency_id, who, value)
+		Pallet::<T>::can_reserve(currency_id, who, value)
 	}
 
 	fn slash_reserved(
@@ -1286,20 +1286,20 @@ where
 		who: &T::AccountId,
 		value: Self::Balance,
 	) -> (Self::NegativeImbalance, Self::Balance) {
-		let actual = Module::<T>::slash_reserved(currency_id, who, value);
+		let actual = Pallet::<T>::slash_reserved(currency_id, who, value);
 		(MultiTokenNegativeImbalance::zero(currency_id), actual)
 	}
 
 	fn reserved_balance(currency_id: T::CurrencyId, who: &T::AccountId) -> Self::Balance {
-		Module::<T>::reserved_balance(currency_id, who)
+		Pallet::<T>::reserved_balance(currency_id, who)
 	}
 
 	fn reserve(currency_id: T::CurrencyId, who: &T::AccountId, value: Self::Balance) -> DispatchResult {
-		Module::<T>::reserve(currency_id, who, value)
+		Pallet::<T>::reserve(currency_id, who, value)
 	}
 
 	fn unreserve(currency_id: T::CurrencyId, who: &T::AccountId, value: Self::Balance) -> Self::Balance {
-		Module::<T>::unreserve(currency_id, who, value)
+		Pallet::<T>::unreserve(currency_id, who, value)
 	}
 
 	fn repatriate_reserved(
@@ -1309,7 +1309,7 @@ where
 		value: Self::Balance,
 		status: BalanceStatus,
 	) -> result::Result<Self::Balance, DispatchError> {
-		Module::<T>::repatriate_reserved(currency_id, slashed, beneficiary, value, status)
+		Pallet::<T>::repatriate_reserved(currency_id, slashed, beneficiary, value, status)
 	}
 }
 
@@ -1327,7 +1327,7 @@ where
 		amount: Self::Balance,
 		_reasons: WithdrawReasons,
 	) {
-		Module::<T>::set_lock(id, currency_id, who, amount)
+		Pallet::<T>::set_lock(id, currency_id, who, amount)
 	}
 
 	fn extend_lock(
@@ -1337,11 +1337,11 @@ where
 		amount: Self::Balance,
 		_reasons: WithdrawReasons,
 	) {
-		Module::<T>::extend_lock(id, currency_id, who, amount)
+		Pallet::<T>::extend_lock(id, currency_id, who, amount)
 	}
 
 	fn remove_lock(currency_id: T::CurrencyId, id: LockIdentifier, who: &T::AccountId) {
-		Module::<T>::remove_lock(id, currency_id, who)
+		Pallet::<T>::remove_lock(id, currency_id, who)
 	}
 }
 
@@ -1385,9 +1385,9 @@ where
 		if amount.is_zero() {
 			return Ok(());
 		}
-		Module::<T>::ensure_can_withdraw(currency_id, who, amount)?;
+		Pallet::<T>::ensure_can_withdraw(currency_id, who, amount)?;
 		<TotalIssuance<T>>::mutate(currency_id, |v| *v -= amount);
-		Module::<T>::set_free_balance(currency_id, who, Self::free_balance(currency_id, who) - amount);
+		Pallet::<T>::set_free_balance(currency_id, who, Self::free_balance(currency_id, who) - amount);
 		Ok(())
 	}
 }
