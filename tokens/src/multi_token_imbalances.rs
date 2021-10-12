@@ -1,6 +1,6 @@
 // wrapping these imbalances in a private module is necessary to ensure absolute
 // privacy of the inner member.
-use crate::{TotalIssuance, Trait};
+use crate::{TotalIssuance, Config};
 use frame_support::storage::StorageMap;
 use frame_support::traits::{Imbalance, TryDrop};
 use sp_runtime::traits::{Saturating, Zero};
@@ -10,13 +10,13 @@ pub trait MultiTokenImbalanceWithZeroTrait<CurrencyId> {
 	fn from_zero(currency_id: CurrencyId) -> Self;
 }
 
-impl<T: Trait> MultiTokenImbalanceWithZeroTrait<T::CurrencyId> for PositiveImbalance<T> {
+impl<T: Config> MultiTokenImbalanceWithZeroTrait<T::CurrencyId> for PositiveImbalance<T> {
 	fn from_zero(currency_id: T::CurrencyId) -> Self {
 		Self::new(currency_id, Zero::zero())
 	}
 }
 
-impl<T: Trait> MultiTokenImbalanceWithZeroTrait<T::CurrencyId> for NegativeImbalance<T> {
+impl<T: Config> MultiTokenImbalanceWithZeroTrait<T::CurrencyId> for NegativeImbalance<T> {
 	fn from_zero(currency_id: T::CurrencyId) -> Self {
 		Self::new(currency_id, Zero::zero())
 	}
@@ -26,9 +26,9 @@ impl<T: Trait> MultiTokenImbalanceWithZeroTrait<T::CurrencyId> for NegativeImbal
 /// denoting that funds have been created without any equal and opposite
 /// accounting.
 #[must_use]
-pub struct PositiveImbalance<T: Trait>(T::CurrencyId, T::Balance);
+pub struct PositiveImbalance<T: Config>(T::CurrencyId, T::Balance);
 
-impl<T: Trait> PositiveImbalance<T> {
+impl<T: Config> PositiveImbalance<T> {
 	/// Create a new positive imbalance from a balance.
 	pub fn new(currency_id: T::CurrencyId, amount: T::Balance) -> Self {
 		PositiveImbalance(currency_id, amount)
@@ -43,9 +43,9 @@ impl<T: Trait> PositiveImbalance<T> {
 /// denoting that funds have been destroyed without any equal and opposite
 /// accounting.
 #[must_use]
-pub struct NegativeImbalance<T: Trait>(pub T::CurrencyId, T::Balance);
+pub struct NegativeImbalance<T: Config>(pub T::CurrencyId, T::Balance);
 
-impl<T: Trait> NegativeImbalance<T> {
+impl<T: Config> NegativeImbalance<T> {
 	/// Create a new negative imbalance from a balance.
 	pub fn new(currency_id: T::CurrencyId, amount: T::Balance) -> Self {
 		NegativeImbalance(currency_id, amount)
@@ -56,13 +56,13 @@ impl<T: Trait> NegativeImbalance<T> {
 	}
 }
 
-impl<T: Trait> TryDrop for PositiveImbalance<T> {
+impl<T: Config> TryDrop for PositiveImbalance<T> {
 	fn try_drop(self) -> result::Result<(), Self> {
 		self.drop_zero()
 	}
 }
 
-impl<T: Trait> Imbalance<T::Balance> for PositiveImbalance<T> {
+impl<T: Config> Imbalance<T::Balance> for PositiveImbalance<T> {
 	type Opposite = NegativeImbalance<T>;
 
 	fn zero() -> Self {
@@ -112,13 +112,13 @@ impl<T: Trait> Imbalance<T::Balance> for PositiveImbalance<T> {
 	}
 }
 
-impl<T: Trait> TryDrop for NegativeImbalance<T> {
+impl<T: Config> TryDrop for NegativeImbalance<T> {
 	fn try_drop(self) -> result::Result<(), Self> {
 		self.drop_zero()
 	}
 }
 
-impl<T: Trait> Imbalance<T::Balance> for NegativeImbalance<T> {
+impl<T: Config> Imbalance<T::Balance> for NegativeImbalance<T> {
 	type Opposite = PositiveImbalance<T>;
 
 	fn zero() -> Self {
@@ -166,14 +166,14 @@ impl<T: Trait> Imbalance<T::Balance> for NegativeImbalance<T> {
 	}
 }
 
-impl<T: Trait> Drop for PositiveImbalance<T> {
+impl<T: Config> Drop for PositiveImbalance<T> {
 	/// Basic drop handler will just square up the total issuance.
 	fn drop(&mut self) {
 		<TotalIssuance<T>>::mutate(self.0, |v| *v = v.saturating_add(self.1));
 	}
 }
 
-impl<T: Trait> Drop for NegativeImbalance<T> {
+impl<T: Config> Drop for NegativeImbalance<T> {
 	/// Basic drop handler will just square up the total issuance.
 	fn drop(&mut self) {
 		<TotalIssuance<T>>::mutate(self.0, |v| *v = v.saturating_sub(self.1));

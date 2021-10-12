@@ -52,7 +52,7 @@ use frame_system::{ensure_signed, pallet_prelude::*, ensure_root};
 use orml_traits::{
 	account::MergeAccount,
 	arithmetic::{self, Signed},
-	GetByKey, LockIdentifier, MultiCurrency, MultiCurrencyExtended, MultiLockableCurrency,
+	GetByKey, MultiCurrency, MultiCurrencyExtended, MultiLockableCurrency,
 	MultiReservableCurrency, OnDust,
 };
 use sp_runtime::{
@@ -75,6 +75,7 @@ pub use multi_token_currency::{
 pub use multi_token_imbalances::{
 	NegativeImbalance as MultiTokenNegativeImbalance, PositiveImbalance as MultiTokenPositiveImbalance, MultiTokenImbalanceWithZeroTrait
 };
+use codec::{Encode, Decode, FullCodec};
 
 mod default_weight;
 mod imbalances;
@@ -152,10 +153,10 @@ impl<Balance: Saturating + Copy + Ord> AccountData<Balance> {
 	}
 }
 
-pub use module::*;
+pub use pallet::*;
 
 #[frame_support::pallet]
-pub mod module {
+pub mod pallet {
 	use super::*;
 
 	pub trait WeightInfo {
@@ -181,14 +182,14 @@ pub mod module {
 			+ Default
 			+ Copy
 			+ MaybeSerializeDeserialize + From<Amount>
-			+ Into<Amount>;;
+			+ Into<Amount>;
 
 		/// The currency ID type
 		type CurrencyId: Parameter + Member + Copy + MaybeSerializeDeserialize + Ord + Default
 		+ AtLeast32BitUnsigned
 		+ FullCodec
 		+ From<TokenId>
-		+ Into<TokenId>;;
+		+ Into<TokenId>;
 
 		/// Weight information for extrinsics in this module.
 		type WeightInfo: WeightInfo;
@@ -227,8 +228,8 @@ pub mod module {
 		/// ExistentialDeposit, resulting in an outright loss. \[account,
 		/// currency_id, amount\]
 		DustLost(T::AccountId, T::CurrencyId, T::Balance),
-		Issued(CurrencyId, AccountId, Balance),
-		Minted(CurrencyId, AccountId, Balance),
+		Issued(T::CurrencyId, T::AccountId, T::Balance),
+		Minted(T::CurrencyId, T::AccountId, T::Balance),
 	}
 
 	/// The total issuance of a token type.
@@ -327,7 +328,7 @@ pub mod module {
 			origin: OriginFor<T>,
 			dest: <T::Lookup as StaticLookup>::Source,
 			token_id: TokenId,
-			#[compact] value: Balance,
+			#[pallet::compact] value: Balance,
 		) -> DispatchResultWithPostInfo {
 			let from = ensure_signed(origin)?;
 			let to = T::Lookup::lookup(dest)?;
@@ -361,28 +362,30 @@ pub mod module {
 
 		#[pallet::weight(10_000)]
 		pub fn create(
-			origin,
+			origin: OriginFor<T>,
 			account_id: T::AccountId,
-			value: Balance,
-		) {
+			#[pallet::compact] value: Balance,
+		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 			let amount: T::Balance = value.into();
 			let currency_id = MultiTokenCurrencyAdapter::<T>::create(&account_id, amount);
-			Self::deposit_event(RawEvent::Issued(currency_id, account_id, amount));
+			Self::deposit_event(Event::Issued(currency_id, account_id, amount));
+			Ok(().into())
 		}
 
 		#[pallet::weight(10_000)]
 		pub fn mint(
-			origin,
+			origin: OriginFor<T>,
 			token_id: TokenId,
 			account_id: T::AccountId,
-			value: Balance,
-		) {
+			#[pallet::compact] value: Balance,
+		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 			let currency_id: T::CurrencyId = token_id.into();
 			let amount: T::Balance = value.into();
 			MultiTokenCurrencyAdapter::<T>::mint(currency_id, &account_id, amount)?;
-			Self::deposit_event(RawEvent::Minted(currency_id, account_id, amount));
+			Self::deposit_event(Event::Minted(currency_id, account_id, amount));
+			Ok(().into())
 		}
 
 	}
@@ -1103,7 +1106,7 @@ pub struct MultiTokenCurrencyAdapter<T>(marker::PhantomData<T>);
 
 impl<T> MultiTokenCurrency<T::AccountId> for MultiTokenCurrencyAdapter<T>
 where
-	T: Trait,
+	T: Config,
 {
 	type Balance = T::Balance;
 	type CurrencyId = T::CurrencyId;
@@ -1214,7 +1217,7 @@ where
 		currency_id: T::CurrencyId,
 		who: &T::AccountId,
 		value: Self::Balance,
-	) -> result::Result<Self::PositiveImbalance, DispatchError> {
+	) -> sp_std::result::Result<Self::PositiveImbalance, DispatchError> {
 		if value.is_zero() {
 			return Ok(MultiTokenPositiveImbalance::zero(currency_id));
 		}
@@ -1241,7 +1244,7 @@ where
 		value: Self::Balance,
 		_reasons: WithdrawReasons,
 		_liveness: ExistenceRequirement,
-	) -> result::Result<Self::NegativeImbalance, DispatchError> {
+	) -> sp_std::result::Result<Self::NegativeImbalance, DispatchError> {
 		if value.is_zero() {
 			return Ok(MultiTokenNegativeImbalance::zero(currency_id));
 		}
@@ -1275,7 +1278,7 @@ where
 
 impl<T> MultiTokenReservableCurrency<T::AccountId> for MultiTokenCurrencyAdapter<T>
 where
-	T: Trait,
+	T: Config,
 {
 	fn can_reserve(currency_id: T::CurrencyId, who: &T::AccountId, value: Self::Balance) -> bool {
 		Pallet::<T>::can_reserve(currency_id, who, value)
@@ -1308,14 +1311,14 @@ where
 		beneficiary: &T::AccountId,
 		value: Self::Balance,
 		status: BalanceStatus,
-	) -> result::Result<Self::Balance, DispatchError> {
+	) -> sp_std::result::Result<Self::Balance, DispatchError> {
 		Pallet::<T>::repatriate_reserved(currency_id, slashed, beneficiary, value, status)
 	}
 }
 
 impl<T> MultiTokenLockableCurrency<T::AccountId> for MultiTokenCurrencyAdapter<T>
 where
-	T: Trait,
+	T: Config,
 {
 	type Moment = T::BlockNumber;
 	type MaxLocks = ();
@@ -1327,7 +1330,7 @@ where
 		amount: Self::Balance,
 		_reasons: WithdrawReasons,
 	) {
-		Pallet::<T>::set_lock(id, currency_id, who, amount)
+		let _ = Pallet::<T>::set_lock(id, currency_id, who, amount);
 	}
 
 	fn extend_lock(
@@ -1337,17 +1340,17 @@ where
 		amount: Self::Balance,
 		_reasons: WithdrawReasons,
 	) {
-		Pallet::<T>::extend_lock(id, currency_id, who, amount)
+		let _ = Pallet::<T>::extend_lock(id, currency_id, who, amount);
 	}
 
 	fn remove_lock(currency_id: T::CurrencyId, id: LockIdentifier, who: &T::AccountId) {
-		Pallet::<T>::remove_lock(id, currency_id, who)
+		let _ = Pallet::<T>::remove_lock(id, currency_id, who);
 	}
 }
 
 impl<T> MultiTokenCurrencyExtended<T::AccountId> for MultiTokenCurrencyAdapter<T>
 where
-	T: Trait,
+	T: Config,
 {
 	fn create(address: &T::AccountId, amount: T::Balance) -> T::CurrencyId {
 		let token_id = <NextCurrencyId<T>>::get();
