@@ -4,7 +4,7 @@
 
 use super::*;
 use frame_support::{assert_noop, assert_ok};
-use mock::{Event, *};
+use mock::{Event, Balance, *};
 
 #[test]
 fn minimum_balance_work() {
@@ -1003,7 +1003,7 @@ fn create_token_as_root() {
 		assert_ok!(Tokens::create(Origin::root(), ALICE.into(), amount));
 		assert!(System::events()
 			.iter()
-			.any(|record| record.event == TestEvent::tokens(RawEvent::Issued(token_id, ALICE, amount))));
+			.any(|record| record.event == Event::tokens(crate::Event::Issued(token_id, ALICE, amount))));
 	});
 }
 
@@ -1031,7 +1031,7 @@ fn mint_tokens_as_root() {
 
 		assert!(System::events()
 			.iter()
-			.any(|record| record.event == TestEvent::tokens(RawEvent::Minted(token_id, ALICE, amount))));
+			.any(|record| record.event == Event::tokens(crate::Event::Minted(token_id, ALICE, amount))));
 	});
 }
 
