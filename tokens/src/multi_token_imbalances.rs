@@ -1,7 +1,6 @@
 // wrapping these imbalances in a private module is necessary to ensure absolute
 // privacy of the inner member.
 use crate::{TotalIssuance, Config};
-use frame_support::storage::StorageMap;
 use frame_support::traits::{Imbalance, TryDrop};
 use sp_runtime::traits::{Saturating, Zero};
 use sp_std::{mem, result};
