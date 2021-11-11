@@ -68,7 +68,7 @@ use sp_std::{
 	vec::Vec,
 };
 
-use mangata_primitives::{Amount, Balance, TokenId};
+use mangata_primitives::{Amount, Balance as MangataBalance, TokenId};
 pub use multi_token_currency::{
 	MultiTokenCurrency, MultiTokenCurrencyExtended, MultiTokenLockableCurrency, MultiTokenReservableCurrency,
 };
@@ -188,8 +188,8 @@ pub mod module {
 			+ Copy
 			+ MaybeSerializeDeserialize
 			+ MaxEncodedLen
-			+ From<Balance>
-			+ Into<Balance>;
+			+ From<MangataBalance>
+			+ Into<MangataBalance>;
 
 		/// The amount type, should be signed version of `Balance`
 		type Amount: Signed
@@ -437,7 +437,7 @@ pub mod module {
 				<Self as fungibles::Inspect<T::AccountId>>::reducible_balance(token_id.into(), &from, keep_alive);
 			<Self as fungibles::Transfer<_>>::transfer(token_id.into(), &from, &to, token_id.into(), keep_alive)?;
 
-			Self::deposit_event(Event::Transfer(token_id.into(), from, to, token_id.into()));
+			Self::deposit_event(Event::Transfer(token_id.into(), from, to, reducible_balance));
 			Ok(())
 		}
 
@@ -549,12 +549,12 @@ pub mod module {
 		pub fn create(
 			origin: OriginFor<T>,
 			account_id: T::AccountId,
-			#[pallet::compact] value: Balance,
+			#[pallet::compact] value: T::Balance,
 		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
-			let amount: T::Balance = value.into();
-			let currency_id = MultiTokenCurrencyAdapter::<T>::create(&account_id, amount);
-			Self::deposit_event(Event::Issued(currency_id, account_id, amount));
+			// let amount: T::Balance = value.into();
+			let currency_id = MultiTokenCurrencyAdapter::<T>::create(&account_id, value);
+			Self::deposit_event(Event::Issued(currency_id, account_id, value));
 			Ok(().into())
 		}
 
@@ -563,13 +563,13 @@ pub mod module {
 			origin: OriginFor<T>,
 			token_id: TokenId,
 			account_id: T::AccountId,
-			#[pallet::compact] value: Balance,
+			#[pallet::compact] value: T::Balance,
 		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
 			let currency_id: T::CurrencyId = token_id.into();
-			let amount: T::Balance = value.into();
-			MultiTokenCurrencyAdapter::<T>::mint(currency_id, &account_id, amount)?;
-			Self::deposit_event(Event::Minted(currency_id, account_id, amount));
+			// let amount: T::Balance = value.into();
+			MultiTokenCurrencyAdapter::<T>::mint(currency_id, &account_id, value)?;
+			Self::deposit_event(Event::Minted(currency_id, account_id, value));
 			Ok(().into())
 		}
 	}
@@ -2039,8 +2039,8 @@ where
 	}
 
 	fn mint(currency_id: T::CurrencyId, who: &T::AccountId, amount: T::Balance) -> DispatchResult {
-        /// lets use existing minting impl
-		<Pallet<T> as fungibles::Mutate<_>>::mint_into(currency_id, who, amount);
+        // lets use existing minting impl
+		<Pallet<T> as fungibles::Mutate<_>>::mint_into(currency_id, who, amount)
 
 		// if !Self::exists(currency_id) {
 		// 	return Err(DispatchError::from(Error::<T>::TokenIdNotExists));
@@ -2052,11 +2052,11 @@ where
 		// 	.ok_or(Error::<T>::BalanceOverflow)?;
         //
 		// let _ = <Self as MultiTokenCurrency<T::AccountId>>::deposit_creating(currency_id, address, amount);
-		Ok(())
+		// Ok(())
 	}
 
 	fn get_next_currency_id() -> Self::CurrencyId {
-		<Module<T>>::next_asset_id()
+		<Pallet<T>>::next_asset_id()
 	}
 
 	fn exists(currency_id: Self::CurrencyId) -> bool {

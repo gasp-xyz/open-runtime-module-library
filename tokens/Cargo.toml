@@ -22,8 +22,8 @@ mangata-primitives = { path = "../../mangata-node/primitives/mangata", default-f
 [dev-dependencies]
 sp-core = { default-features = false, path = "../../substrate/primitives/core" }
 sp-io = { default-features = false, path = "../../substrate/primitives/io" }
-# pallet-treasury = { version = "3.0.0" , path = "../../substrate/frame/treasury" }
-# pallet-elections-phragmen = { version = "3.0.0" , path = "../../substrate/frame/elections-phragmen" }
+pallet-treasury = { version = "4.0.0-dev" , path = "../../substrate/frame/treasury" }
+pallet-elections-phragmen = { version = "5.0.0-dev" , path = "../../substrate/frame/elections-phragmen" }
 #pallet-elections-phragmen = { version = "3.0.0" , path = "../../substrate/frame/elections-phragmen" }
 
 
