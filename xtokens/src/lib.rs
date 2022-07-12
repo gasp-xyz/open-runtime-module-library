@@ -57,7 +57,7 @@ pub mod module {
 
 	use super::*;
 
-	pub const XtokensTransferWeight: Weight = 2_000_000_000.saturating_add(T::BaseXcmWeight::get());
+	pub const XtokensTransferWeight: Weight = 2_000_000_000.saturating_add(<Pallet<T> as Config>::BaseXcmWeight::get());
 
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
