@@ -57,8 +57,6 @@ pub mod module {
 
 	use super::*;
 
-	pub const XtokensTransferWeight: Weight = 2_000_000_000.saturating_add(<Pallet<T> as Config>::BaseXcmWeight::get());
-
 	#[pallet::config]
 	pub trait Config: frame_system::Config {
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
@@ -198,6 +196,9 @@ pub mod module {
 
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
+	
+		pub const XtokensTransferWeight: Weight = 2_000_000_000.saturating_add(<Pallet<T> as Config>::BaseXcmWeight::get());
+
 		/// Transfer native currencies.
 		///
 		/// `dest_weight` is the weight for XCM execution on the dest chain, and
