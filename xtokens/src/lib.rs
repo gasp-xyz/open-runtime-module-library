@@ -200,6 +200,7 @@ pub mod module {
 		/// received. Receiving depends on if the XCM message could be delivered
 		/// by the network, and if the receiving chain would handle
 		/// messages correctly.
+		#[pallet::call_index(0)]
 		#[pallet::weight(Pallet::<T>::fixed_weight_of_transfer())]
 		pub fn transfer(
 			origin: OriginFor<T>,
@@ -225,6 +226,7 @@ pub mod module {
 		/// received. Receiving depends on if the XCM message could be delivered
 		/// by the network, and if the receiving chain would handle
 		/// messages correctly.
+		#[pallet::call_index(1)]
 		#[pallet::weight(Pallet::<T>::weight_of_transfer_multiasset(asset, dest))]
 		pub fn transfer_multiasset(
 			origin: OriginFor<T>,
@@ -259,6 +261,7 @@ pub mod module {
 		/// received. Receiving depends on if the XCM message could be delivered
 		/// by the network, and if the receiving chain would handle
 		/// messages correctly.
+		#[pallet::call_index(2)]
 		#[pallet::weight(Pallet::<T>::fixed_weight_of_transfer())]
 		pub fn transfer_with_fee(
 			origin: OriginFor<T>,
@@ -295,6 +298,7 @@ pub mod module {
 		/// received. Receiving depends on if the XCM message could be delivered
 		/// by the network, and if the receiving chain would handle
 		/// messages correctly.
+		#[pallet::call_index(3)]
 		#[pallet::weight(Pallet::<T>::weight_of_transfer_multiasset(asset, dest))]
 		pub fn transfer_multiasset_with_fee(
 			origin: OriginFor<T>,
@@ -326,6 +330,7 @@ pub mod module {
 		/// received. Receiving depends on if the XCM message could be delivered
 		/// by the network, and if the receiving chain would handle
 		/// messages correctly.
+		#[pallet::call_index(4)]
 		#[pallet::weight(Pallet::<T>::fixed_weight_of_transfer())]
 		pub fn transfer_multicurrencies(
 			origin: OriginFor<T>,
@@ -355,6 +360,7 @@ pub mod module {
 		/// received. Receiving depends on if the XCM message could be delivered
 		/// by the network, and if the receiving chain would handle
 		/// messages correctly.
+		#[pallet::call_index(5)]
 		#[pallet::weight(Pallet::<T>::weight_of_transfer_multiassets(assets, fee_item, dest))]
 		pub fn transfer_multiassets(
 			origin: OriginFor<T>,

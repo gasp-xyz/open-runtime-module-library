@@ -131,6 +131,7 @@ pub mod module {
 
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
+		#[pallet::call_index(0)]
 		#[pallet::weight(T::WeightInfo::register_asset())]
 		#[transactional]
 		pub fn register_asset(
@@ -143,6 +144,7 @@ pub mod module {
 			Self::do_register_asset(metadata, asset_id)
 		}
 
+		#[pallet::call_index(1)]
 		#[pallet::weight(T::WeightInfo::update_asset())]
 		#[transactional]
 		pub fn update_asset(
