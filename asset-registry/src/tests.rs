@@ -367,7 +367,7 @@ fn test_register_duplicate_location_returns_error() {
 			None
 		));
 		let register_asset = RuntimeCall::AssetRegistry(crate::Call::<para::Runtime>::register_asset {
-			metadata,
+			metadata: metadata.clone(),
 			asset_id: None,
 		});
 		assert_noop!(
