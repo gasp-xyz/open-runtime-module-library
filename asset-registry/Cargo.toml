@@ -21,13 +21,13 @@ sp-runtime = { git = "https://github.com/mangata-finance/polkadot-sdk", default-
 sp-std = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
 sp-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop", default-features = false }
 frame-benchmarking = {  git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop", default-features = false , optional = true }
+mangata-types = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , features = ["serde"], branch = "eth-rollup-develop" }
 
 # polkadot
-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-xcm = { package = "staging-xcm", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-xcm-builder = { package = "staging-xcm-builder", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-xcm-executor = { package = "staging-xcm-executor", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-mangata-types = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , features = ["serde"], branch = "eth-rollup-develop" }
+# pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
+# xcm = { package = "staging-xcm", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
+# xcm-builder = { package = "staging-xcm-builder", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
+# xcm-executor = { package = "staging-xcm-executor", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
 
 # orml
 orml-traits = { path = "../traits", version = "0.4.1-dev", default-features = false }
@@ -42,22 +42,22 @@ pallet-message-queue = { git = "https://github.com/mangata-finance/polkadot-sdk"
 mangata-support = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
 
 # cumulus
-cumulus-primitives-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-cumulus-pallet-dmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-cumulus-pallet-xcmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-cumulus-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-parachain-info = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# cumulus-primitives-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# cumulus-pallet-dmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# cumulus-pallet-xcmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# cumulus-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# parachain-info = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
 
 # polkadot
-polkadot-parachain = { package = "polkadot-parachain-primitives", git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-polkadot-runtime-parachains = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-xcm-simulator = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# polkadot-parachain = { package = "polkadot-parachain-primitives", git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# polkadot-runtime-parachains = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# xcm-simulator = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
 
 # orml
 orml-tokens = { path = "../tokens" }
-orml-xcm = { path = "../xcm" }
-orml-xcm-support = { path = "../xcm-support", default-features = false }
-orml-xtokens = { path = "../xtokens" }
+# orml-xtokens = { path = "../xtokens" }
+# orml-xcm = { path = "../xcm" }
+# orml-xcm-support = { path = "../xcm-support", default-features = false }
 
 [features]
 default = ["std"]
@@ -69,13 +69,13 @@ std = [
 	"frame-system/std",
 	"frame-benchmarking/std",
 	"orml-traits/std",
-	"pallet-xcm/std",
+	# "pallet-xcm/std",
 	"scale-info/std",
 	"sp-runtime/std",
 	"sp-std/std",
-	"xcm-builder/std",
-	"xcm-executor/std",
-	"xcm/std",
+	# "xcm-builder/std",
+	# "xcm-executor/std",
+	# "xcm/std",
 	"sp-core/std",
 	"mangata-types/std",
 ]
@@ -83,13 +83,13 @@ runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
-	"pallet-xcm/runtime-benchmarks",
+	# "pallet-xcm/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
-	"xcm-builder/runtime-benchmarks",
-	"xcm-executor/runtime-benchmarks",
+	# "xcm-builder/runtime-benchmarks",
+	# "xcm-executor/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-support/try-runtime",
 	"frame-system/try-runtime",
-	"pallet-xcm/try-runtime",
+	# "pallet-xcm/try-runtime",
 ]

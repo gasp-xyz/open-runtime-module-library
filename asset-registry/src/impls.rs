@@ -1,16 +1,16 @@
 use crate::module::*;
 use frame_support::{pallet_prelude::*, weights::constants::WEIGHT_REF_TIME_PER_SECOND};
 use orml_traits::{
-	asset_registry::{AssetMetadata, FixedConversionRateProvider, Inspect, Mutate, WeightToFeeConverter},
+	asset_registry::{AssetMetadata, Inspect, Mutate},
 	GetByKey,
 };
 use sp_runtime::FixedPointNumber;
 use sp_runtime::{traits::Bounded, FixedU128};
 use sp_std::prelude::*;
-use xcm::v3::{prelude::*, Weight as XcmWeight};
-use xcm::VersionedMultiLocation;
-use xcm_builder::TakeRevenue;
-use xcm_executor::{traits::WeightTrader, Assets};
+// use xcm::v3::{prelude::*, Weight as XcmWeight};
+// use xcm::VersionedMultiLocation;
+// use xcm_builder::TakeRevenue;
+// use xcm_executor::{traits::WeightTrader, Assets};
 /*
 /// Alias for AssetMetadata to improve readability (and to placate clippy)
 pub type DefaultAssetMetadata<T> =
@@ -46,7 +46,7 @@ where
 }
 */
 
-/// A default implementation for WeightToFeeConverter that takes a fixed
+/* /// A default implementation for WeightToFeeConverter that takes a fixed
 /// conversion rate.
 pub struct FixedRateAssetRegistryTrader<P: FixedConversionRateProvider>(PhantomData<P>);
 impl<P: FixedConversionRateProvider> WeightToFeeConverter for FixedRateAssetRegistryTrader<P> {
@@ -154,6 +154,7 @@ impl<W: WeightToFeeConverter, R: TakeRevenue> Drop for AssetRegistryTrader<W, R>
 		}
 	}
 }
+ */
 
 pub struct ExistentialDeposits<T: Config>(PhantomData<T>);
 
@@ -176,23 +177,27 @@ impl<T: Config> Inspect for Pallet<T> {
 	type CustomMetadata = T::CustomMetadata;
 	type StringLimit = T::StringLimit;
 
-	fn asset_id(location: &MultiLocation) -> Option<Self::AssetId> {
-		Pallet::<T>::location_to_asset_id(location)
-	}
+	/*
+		fn asset_id(location: &MultiLocation) -> Option<Self::AssetId> {
+			Pallet::<T>::location_to_asset_id(location)
+		}
+	*/
 
 	fn metadata(id: &Self::AssetId) -> Option<AssetMetadata<Self::Balance, Self::CustomMetadata, Self::StringLimit>> {
 		Pallet::<T>::metadata(id)
 	}
 
-	fn metadata_by_location(
-		location: &MultiLocation,
-	) -> Option<AssetMetadata<Self::Balance, Self::CustomMetadata, Self::StringLimit>> {
-		Pallet::<T>::fetch_metadata_by_location(location)
-	}
+	/*
+		fn metadata_by_location(
+			location: &MultiLocation,
+		) -> Option<AssetMetadata<Self::Balance, Self::CustomMetadata, Self::StringLimit>> {
+			Pallet::<T>::fetch_metadata_by_location(location)
+		}
 
-	fn location(asset_id: &Self::AssetId) -> Result<Option<MultiLocation>, DispatchError> {
-		Pallet::<T>::multilocation(asset_id)
-	}
+		fn location(asset_id: &Self::AssetId) -> Result<Option<MultiLocation>, DispatchError> {
+			Pallet::<T>::multilocation(asset_id)
+		}
+	*/
 }
 
 impl<T: Config> Mutate for Pallet<T> {
@@ -210,7 +215,7 @@ impl<T: Config> Mutate for Pallet<T> {
 		name: Option<BoundedVec<u8, Self::StringLimit>>,
 		symbol: Option<BoundedVec<u8, Self::StringLimit>>,
 		existential_deposit: Option<Self::Balance>,
-		location: Option<Option<VersionedMultiLocation>>,
+		// location: Option<Option<VersionedMultiLocation>>,
 		additional: Option<Self::CustomMetadata>,
 	) -> DispatchResult {
 		Pallet::<T>::do_update_asset(
@@ -219,7 +224,7 @@ impl<T: Config> Mutate for Pallet<T> {
 			name,
 			symbol,
 			existential_deposit,
-			location,
+			// location,
 			additional,
 		)
 	}
