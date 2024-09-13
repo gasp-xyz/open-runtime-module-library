@@ -7,7 +7,13 @@ shift
 
 set -x
 
-for file in **/Cargo.toml; do
-	cargo $COMMAND $@ --manifest-path "$file";
-done
+DIRS=(
+	"asset-registry/Cargo.toml"
+	"traits/Cargo.toml"
+	"tokens/Cargo.toml"
+	"utilities/Cargo.toml"
+)
 
+for file in ${DIRS[@]}; do
+	cargo $COMMAND $@ --manifest-path "$file"
+done
