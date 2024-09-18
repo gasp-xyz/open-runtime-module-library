@@ -37,35 +37,40 @@ scale-info = { version = "2.10.0", default-features = false, features = ["derive
 serde = { version = "1.0.189" }
 parity-scale-codec = { version = "3.6.5", default-features = false, features = ["max-encoded-len"] }
 
-cumulus-pallet-xcm = { version = "0.10.0", default-features = false }
-cumulus-primitives-core = { version = "0.10.0", default-features = false }
-frame-benchmarking = { version = "31.0.0", default-features = false }
-frame-support = { version = "31.0.0", default-features = false }
-frame-system = { version = "31.0.0", default-features = false }
-pallet-balances = { version = "31.0.0", default-features = false }
-pallet-elections-phragmen = { version = "32.0.0", default-features = false }
-pallet-message-queue = { version = "34.0.0", default-features = false }
-pallet-preimage = { version = "31.0.0", default-features = false }
-pallet-root-testing = { version = "7.0.0", default-features = false }
-pallet-scheduler = { version = "32.0.0", default-features = false }
-pallet-timestamp = { version = "30.0.0", default-features = false }
-pallet-treasury = { version = "30.0.0", default-features = false }
-pallet-xcm = { version = "10.0.0", default-features = false }
-polkadot-parachain-primitives = { version = "9.0.0", default-features = false }
-polkadot-runtime-common = { version = "10.0.0", default-features = false }
-polkadot-runtime-parachains = { version = "10.0.0", default-features = false }
-sp-api = { version = "29.0.0", default-features = false }
-sp-application-crypto = { version = "33.0.0", default-features = false }
-sp-arithmetic = { version = "25.0.0", default-features = false }
-sp-core = { version = "31.0.0", default-features = false }
-sp-io = { version = "33.0.0", default-features = false }
-sp-runtime = { version = "34.0.0", default-features = false }
-sp-runtime-interface = { version = "26.0.0", default-features = false }
-sp-staking = { version = "29.0.0", default-features = false }
-sp-std = { version = "14.0.0", default-features = false }
-sp-storage = { version = "20.0.0", default-features = false }
-xcm = { version = "10.0.0", package = "staging-xcm", default-features = false }
-xcm-builder = { version = "10.0.0", package = "staging-xcm-builder", default-features = false }
-xcm-executor = { version = "10.0.0", package = "staging-xcm-executor", default-features = false }
+# cumulus-pallet-xcm = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+# cumulus-primitives-core = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+frame-benchmarking = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+frame-support = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+frame-system = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-balances = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-elections-phragmen = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-message-queue = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-preimage = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-root-testing = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-scheduler = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-timestamp = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+pallet-treasury = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+# pallet-xcm = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+# polkadot-parachain-primitives = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+# polkadot-runtime-common = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+# polkadot-runtime-parachains = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-api = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-application-crypto = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-arithmetic = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-core = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-io = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-runtime = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-runtime-interface = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-staking = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-std = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+sp-storage = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+mangata-types = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
+# xcm = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", package = "staging-xcm", default-features = false }
+# xcm-builder = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", package = "staging-xcm-builder", default-features = false }
+# xcm-executor = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", package = "staging-xcm-executor", default-features = false }
 
-xcm-simulator = { version = "10.0.0" }
+# xcm-simulator = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0" }
+
+[patch."https://github.com/paritytech/polkadot-sdk"]
+# ... which satisfies git dependency `sp-crypto-ec-utils` of package `sp-ark-bls12-381 v0.4.2 (https://github.com/paritytech/arkworks-substrate#caa2eed7)`
+sp-crypto-ec-utils = { git = "https://github.com/gasp-xyz/polkadot-sdk", branch = "feature/update-v1.9.0", default-features = false }
