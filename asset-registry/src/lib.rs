@@ -6,6 +6,7 @@
 
 use frame_support::{pallet_prelude::*, traits::EnsureOriginWithArg};
 use frame_system::pallet_prelude::*;
+use mangata_types::assets::L1Asset;
 pub use orml_traits::asset_registry::AssetMetadata;
 use orml_traits::asset_registry::AssetProcessor;
 use scale_info::TypeInfo;
@@ -15,12 +16,10 @@ use sp_runtime::{
 };
 use sp_std::fmt::Debug;
 use sp_std::prelude::*;
-// use sp_core::H256;
-use mangata_types::assets::L1Asset;
-// use xcm::{v3::prelude::*, VersionedMultiLocation};
+// use xcm::{v3::prelude::*, VersionedLocation};
 
 pub use impls::*;
-pub use module::*;
+use module::*;
 pub use weights::WeightInfo;
 
 mod impls;
@@ -31,9 +30,6 @@ mod benchmarking;
 // mod mock;
 // #[cfg(test)]
 // mod tests;
-
-// mod migrations;
-// pub use migrations::Migration;
 
 #[frame_support::pallet]
 pub mod module {
@@ -93,7 +89,7 @@ pub mod module {
 	pub enum Error<T> {
 		/// Asset was not found.
 		AssetNotFound,
-		/// The version of the `VersionedMultiLocation` value used is not able
+		/// The version of the `VersionedLocation` value used is not able
 		/// to be interpreted.
 		BadVersion,
 		/// The asset id is invalid.
@@ -131,11 +127,11 @@ pub mod module {
 		OptionQuery,
 	>;
 
-	/// Maps a multilocation to an asset id - useful when processing xcm
+	/// Maps a location to an asset id - useful when processing xcm
 	/// messages.
 	// #[pallet::storage]
 	// #[pallet::getter(fn location_to_asset_id)]
-	// pub type LocationToAssetId<T: Config> = StorageMap<_, Twox64Concat, MultiLocation, T::AssetId, OptionQuery>;
+	// pub type LocationToAssetId<T: Config> = StorageMap<_, Twox64Concat, Location, T::AssetId, OptionQuery>;
 
 	/// Maps a asset id to an L1Asset - useful when processing l1 assets
 	#[pallet::storage]
@@ -207,7 +203,7 @@ pub mod module {
 			name: Option<BoundedVec<u8, T::StringLimit>>,
 			symbol: Option<BoundedVec<u8, T::StringLimit>>,
 			existential_deposit: Option<T::Balance>,
-			// location: Option<Option<VersionedMultiLocation>>,
+			// location: Option<Option<VersionedLocation>>,
 			additional: Option<T::CustomMetadata>,
 		) -> DispatchResult {
 			T::AuthorityOrigin::ensure_origin(origin, &Some(asset_id.clone()))?;
@@ -322,7 +318,7 @@ impl<T: Config> Pallet<T> {
 		name: Option<BoundedVec<u8, T::StringLimit>>,
 		symbol: Option<BoundedVec<u8, T::StringLimit>>,
 		existential_deposit: Option<T::Balance>,
-		// location: Option<Option<VersionedMultiLocation>>,
+		// location: Option<Option<VersionedLocation>>,
 		additional: Option<T::CustomMetadata>,
 	) -> DispatchResult {
 		Metadata::<T>::try_mutate(&asset_id, |maybe_metadata| -> DispatchResult {
@@ -363,58 +359,6 @@ impl<T: Config> Pallet<T> {
 		Ok(())
 	}
 
-	/* 	pub fn fetch_metadata_by_location(
-			location: &MultiLocation,
-		) -> Option<AssetMetadata<T::Balance, T::CustomMetadata, T::StringLimit>> {
-			let asset_id = LocationToAssetId::<T>::get(location)?;
-			Metadata::<T>::get(asset_id)
-		}
-
-		pub fn multilocation(asset_id: &T::AssetId) -> Result<Option<MultiLocation>, DispatchError> {
-			Metadata::<T>::get(asset_id)
-				.and_then(|metadata| {
-					metadata
-						.location
-						.map(|location| location.try_into().map_err(|()| Error::<T>::BadVersion.into()))
-				})
-				.transpose()
-		}
-
-		/// update LocationToAssetId mapping if the location changed
-		fn do_update_location(
-			asset_id: T::AssetId,
-			old_location: Option<VersionedMultiLocation>,
-			new_location: Option<VersionedMultiLocation>,
-		) -> DispatchResult {
-			// Update `LocationToAssetId` only if location changed
-			if new_location != old_location {
-				// remove the old location lookup if it exists
-				if let Some(ref old_location) = old_location {
-					let location: MultiLocation = old_location.clone().try_into().map_err(|()| Error::<T>::BadVersion)?;
-					LocationToAssetId::<T>::remove(location);
-				}
-
-				// insert new location
-				if let Some(ref new_location) = new_location {
-					Self::do_insert_location(asset_id, new_location.clone())?;
-				}
-			}
-
-			Ok(())
-		}
-
-		/// insert location into the LocationToAssetId map
-		fn do_insert_location(asset_id: T::AssetId, location: VersionedMultiLocation) -> DispatchResult {
-			// if the metadata contains a location, set the LocationToAssetId
-			let location: MultiLocation = location.try_into().map_err(|()| Error::<T>::BadVersion)?;
-			LocationToAssetId::<T>::try_mutate(location, |maybe_asset_id| {
-				ensure!(maybe_asset_id.is_none(), Error::<T>::ConflictingLocation);
-				*maybe_asset_id = Some(asset_id);
-				Ok(())
-			})
-		}
-	*/
-
 	/// update L1AssetToId if l1_asset_hash has changed
 	fn do_update_l1_asset_to_id(
 		asset_id: T::AssetId,
@@ -445,4 +389,55 @@ impl<T: Config> Pallet<T> {
 			Ok(())
 		})
 	}
+
+	// pub fn fetch_metadata_by_location(
+	// 	location: &Location,
+	// ) -> Option<AssetMetadata<T::Balance, T::CustomMetadata, T::StringLimit>> {
+	// 	let asset_id = LocationToAssetId::<T>::get(location)?;
+	// 	Metadata::<T>::get(asset_id)
+	// }
+
+	// pub fn location(asset_id: &T::AssetId) -> Result<Option<Location>,
+	// DispatchError> { 	Metadata::<T>::get(asset_id)
+	// 		.and_then(|metadata| {
+	// 			metadata
+	// 				.location
+	// 				.map(|location| location.try_into().map_err(|()|
+	// Error::<T>::BadVersion.into())) 		})
+	// 		.transpose()
+	// }
+
+	// /// update LocationToAssetId mapping if the location changed
+	// fn do_update_location(
+	// 	asset_id: T::AssetId,
+	// 	old_location: Option<VersionedLocation>,
+	// 	new_location: Option<VersionedLocation>,
+	// ) -> DispatchResult {
+	// 	// Update `LocationToAssetId` only if location changed
+	// 	if new_location != old_location {
+	// 		// remove the old location lookup if it exists
+	// 		if let Some(ref old_location) = old_location {
+	// 			let location: Location = old_location.clone().try_into().map_err(|()|
+	// Error::<T>::BadVersion)?; 			LocationToAssetId::<T>::remove(location);
+	// 		}
+
+	// 		// insert new location
+	// 		if let Some(ref new_location) = new_location {
+	// 			Self::do_insert_location(asset_id, new_location.clone())?;
+	// 		}
+	// 	}
+
+	// 	Ok(())
+	// }
+
+	// /// insert location into the LocationToAssetId map
+	// fn do_insert_location(asset_id: T::AssetId, location: VersionedLocation) ->
+	// DispatchResult { 	// if the metadata contains a location, set the
+	// LocationToAssetId 	let location: Location = location.try_into().map_err(|()|
+	// Error::<T>::BadVersion)?; 	LocationToAssetId::<T>::try_mutate(location,
+	// |maybe_asset_id| { 		ensure!(maybe_asset_id.is_none(),
+	// Error::<T>::ConflictingLocation); 		*maybe_asset_id = Some(asset_id);
+	// 		Ok(())
+	// 	})
+	// }
 }

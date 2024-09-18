@@ -1,7 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use codec::{Decode, Encode, MaxEncodedLen};
 use impl_trait_for_tuples::impl_for_tuples;
+use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use sp_runtime::{DispatchResult, RuntimeDebug};
 use sp_std::{
 	cmp::{Eq, PartialEq},
@@ -20,6 +20,7 @@ pub use get_by_key::GetByKey;
 // pub use multi_asset::ConcreteFungibleAsset;
 pub use nft::InspectExtended;
 pub use price::{DefaultPriceProvider, PriceProvider};
+pub use rate_limit::{RateLimiter, RateLimiterError};
 pub use rewards::RewardHandler;
 use scale_info::TypeInfo;
 #[cfg(feature = "std")]
@@ -37,6 +38,7 @@ pub mod get_by_key;
 pub mod nft;
 pub mod parameters;
 pub mod price;
+pub mod rate_limit;
 pub mod rewards;
 // pub mod xcm_transfer;
 

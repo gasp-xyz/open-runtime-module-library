@@ -3,73 +3,67 @@ name = "orml-xtokens"
 description = "Cross-chain token transfer."
 repository = "https://github.com/open-web3-stack/open-runtime-module-library/tree/master/xtokens"
 license = "Apache-2.0"
-version = "0.4.1-dev"
+version = "0.9.0"
 authors = ["Acala Developers"]
 edition = "2021"
 
 [dependencies]
-codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false }
-log = { version = "0.4.20", default-features = false }
-scale-info = { version = "2.9.0", default-features = false, features = ["derive"] }
-serde = { version = "1.0.136", optional = true }
+parity-scale-codec = { workspace = true }
+log = { workspace = true }
+scale-info = { workspace = true }
+serde = { workspace = true, optional = true }
 
 # substrate
-frame-support = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-frame-system = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-sp-io = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-sp-runtime = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-sp-std = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-
-# cumulus
-cumulus-primitives-core = { default-features = false , git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
+frame-support = { workspace = true }
+frame-system = { workspace = true }
+sp-io = { workspace = true }
+sp-runtime = { workspace = true }
+sp-std = { workspace = true }
 
 # polkadot
-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-xcm = { package = "staging-xcm", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
-xcm-executor = { package = "staging-xcm-executor", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "release-mangata-v1.1.0" }
+pallet-xcm = { workspace = true }
+xcm = { workspace = true }
+xcm-executor = { workspace = true }
 
 # orml
-orml-traits = { path = "../traits", default-features = false}
-orml-xcm-support = { path = "../xcm-support", default-features = false }
+orml-traits = { path = "../traits", version = "0.9.0", default-features = false}
+orml-xcm-support = { path = "../xcm-support", version = "0.9.0", default-features = false }
 
 [dev-dependencies]
 # substrate
-pallet-balances = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-sp-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-pallet-message-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-
-mangata-support = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
+pallet-balances = { workspace = true, features = ["std"] }
+sp-core = { workspace = true, features = ["std"] }
+pallet-message-queue = { workspace = true, features = ["std"] }
 
 # cumulus
-cumulus-pallet-dmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-cumulus-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-cumulus-pallet-xcmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-cumulus-primitives-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-parachain-info = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
+cumulus-pallet-xcm = { workspace = true, features = ["std"] }
+cumulus-primitives-core = { workspace = true, features = ["std"] }
 
 # polkadot
-polkadot-parachain = { package = "polkadot-parachain-primitives", git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-polkadot-runtime-parachains = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-xcm-builder = { package = "staging-xcm-builder", git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
-xcm-simulator = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "release-mangata-v1.1.0" }
+polkadot-parachain-primitives = { workspace = true, features = ["std"] }
+polkadot-runtime-parachains = { workspace = true, features = ["std"] }
+polkadot-runtime-common = { workspace = true, features = ["std"] }
+xcm-builder = { workspace = true, features = ["std"] }
+xcm-simulator = { workspace = true }
 
 # orml
 orml-tokens = { path = "../tokens" }
 orml-xcm = { path = "../xcm" }
+orml-xcm-mock-message-queue = { path = "../xcm-mock-message-queue" }
 
 [features]
-default = ["std"]
+default = [ "std" ]
 std = [
-	"serde",
-
-	"codec/std",
 	"cumulus-primitives-core/std",
 	"frame-support/std",
 	"frame-system/std",
+	"log/std",
 	"orml-traits/std",
 	"orml-xcm-support/std",
 	"pallet-xcm/std",
+	"parity-scale-codec/std",
 	"scale-info/std",
+	"serde",
 	"sp-io/std",
 	"sp-runtime/std",
 	"sp-std/std",
@@ -81,11 +75,11 @@ runtime-benchmarks = [
 	"frame-system/runtime-benchmarks",
 	"pallet-xcm/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
-	"xcm-builder/runtime-benchmarks",
 	"xcm-executor/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-support/try-runtime",
 	"frame-system/try-runtime",
 	"pallet-xcm/try-runtime",
+	"sp-runtime/try-runtime",
 ]

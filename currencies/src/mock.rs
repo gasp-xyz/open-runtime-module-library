@@ -4,12 +4,11 @@
 
 use super::*;
 use frame_support::{
-	construct_runtime, parameter_types,
-	traits::{ConstU32, ConstU64, Everything, Nothing},
+	construct_runtime, derive_impl, parameter_types,
+	traits::{ConstU32, ConstU64, Nothing},
 	PalletId,
 };
 use orml_traits::{currency::MutationHooks, parameter_type_with_key};
-use sp_core::H256;
 use sp_runtime::{
 	traits::{AccountIdConversion, IdentityLookup},
 	AccountId32, BuildStorage,
@@ -20,30 +19,14 @@ use crate as currencies;
 pub type ReserveIdentifier = [u8; 8];
 
 pub type AccountId = AccountId32;
+
+#[derive_impl(frame_system::config_preludes::TestDefaultConfig as frame_system::DefaultConfig)]
 impl frame_system::Config for Runtime {
-	type RuntimeOrigin = RuntimeOrigin;
-	type RuntimeCall = RuntimeCall;
 	type Nonce = u64;
-	type Hash = H256;
-	type Hashing = ::sp_runtime::traits::BlakeTwo256;
 	type AccountId = AccountId;
 	type Lookup = IdentityLookup<Self::AccountId>;
 	type Block = Block;
-	type RuntimeEvent = RuntimeEvent;
-	type BlockHashCount = ConstU64<250>;
-	type BlockWeights = ();
-	type BlockLength = ();
-	type Version = ();
-	type PalletInfo = PalletInfo;
 	type AccountData = pallet_balances::AccountData<u64>;
-	type OnNewAccount = ();
-	type OnKilledAccount = ();
-	type DbWeight = ();
-	type BaseCallFilter = Everything;
-	type SystemWeightInfo = ();
-	type SS58Prefix = ();
-	type OnSetCode = ();
-	type MaxConsumers = ConstU32<16>;
 }
 
 type CurrencyId = u32;
@@ -60,8 +43,8 @@ impl pallet_balances::Config for Runtime {
 	type ReserveIdentifier = ReserveIdentifier;
 	type WeightInfo = ();
 	type RuntimeHoldReason = RuntimeHoldReason;
+	type RuntimeFreezeReason = RuntimeFreezeReason;
 	type FreezeIdentifier = [u8; 8];
-	type MaxHolds = ();
 	type MaxFreezes = ();
 }
 
@@ -104,8 +87,8 @@ impl orml_tokens::Config for Runtime {
 	type DustRemovalWhitelist = Nothing;
 }
 
-pub const NATIVE_CURRENCY_ID: CurrencyId = 99;
-pub const X_TOKEN_ID: CurrencyId = 0;
+pub const NATIVE_CURRENCY_ID: CurrencyId = 1;
+pub const X_TOKEN_ID: CurrencyId = 2;
 
 parameter_types! {
 	pub const GetNativeCurrencyId: CurrencyId = NATIVE_CURRENCY_ID;
@@ -176,12 +159,11 @@ impl ExtBuilder {
 		.unwrap();
 
 		orml_tokens::GenesisConfig::<Runtime> {
-			tokens_endowment: self
+			balances: self
 				.balances
 				.into_iter()
 				.filter(|(_, currency_id, _)| *currency_id != NATIVE_CURRENCY_ID)
 				.collect::<Vec<_>>(),
-			created_tokens_for_staking: vec![],
 		}
 		.assimilate_storage(&mut t)
 		.unwrap();
