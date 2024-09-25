@@ -24,7 +24,7 @@ The Open Runtime Module Library (ORML) is a community maintained collection of S
 
 #### Tokens
 - [asset-registry](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/asset-registry)
-	- Register asset / token metadata including name, decimals, and XCM MultiLocation
+	- Register asset / token metadata including name, decimals, and XCM Location
 	- Partially based on the Acala’s asset-registry pallet, which includes some Acala specific code (e.g. EVM+) so not suitable for other teams.
 - [currencies](https://github.com/open-web3-stack/open-runtime-module-library/tree/master/currencies)
 	- Provide an unified interface to combine pallet-balances and orml-tokens
@@ -106,6 +106,7 @@ _In alphabetical order_
 - [Parallel Finance](https://github.com/parallel-finance/)
 - [PolkaFoundry Network](https://github.com/PolkaFoundry)
 - [Setheum Network](https://github.com/Setheum-Labs/Setheum)
+- [Titan Network](https://github.com/titan-foundation/titan)
 - [Valiu Liquidity Network](https://github.com/valibre-org/vln-node)
 - [Zeitgeist](https://github.com/zeitgeistpm/zeitgeist)
 - [ZERO Network](https://github.com/playzero/subzero)

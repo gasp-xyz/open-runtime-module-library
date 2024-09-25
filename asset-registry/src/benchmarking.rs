@@ -14,13 +14,6 @@ benchmarks! {
 				symbol: BoundedVec::truncate_from("TOK".as_bytes().to_vec()),
 				additional: <T as module::Config>::CustomMetadata::default(),
 				existential_deposit: 0.into(),
-				location: Some(
-					MultiLocation::new(
-						1,
-						X1(Parachain(2000)),
-					)
-					.into(),
-				),
 			};
 		}: _(RawOrigin::Root, metadata, None)
 
@@ -30,7 +23,6 @@ benchmarks! {
 			let name = BoundedVec::truncate_from("new token".as_bytes().to_vec());
 			let symbol = BoundedVec::truncate_from("NWT".as_bytes().to_vec());
 			let ex_deposit: T::Balance = 18.into();
-			let location = Some(MultiLocation::new(1,X1(Parachain(3000))).into());
 			let additional = <T as module::Config>::CustomMetadata::default();
 		}: _(RawOrigin::Root,
 			asset_id,
@@ -38,6 +30,5 @@ benchmarks! {
 			Some(name),
 			Some(symbol),
 			Some(ex_deposit),
-			Some(location),
 			Some(additional))
 }

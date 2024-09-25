@@ -40,7 +40,6 @@
 
 pub use crate::imbalances::{NegativeImbalance, PositiveImbalance};
 
-use codec::MaxEncodedLen;
 use frame_support::{
 	ensure,
 	pallet_prelude::*,
@@ -58,6 +57,7 @@ use frame_support::{
 	transactional, BoundedVec,
 };
 use frame_system::{ensure_root, ensure_signed, pallet_prelude::*};
+use parity_scale_codec::{Decode, Encode, FullCodec, MaxEncodedLen};
 use scale_info::TypeInfo;
 use sp_core::U256;
 use sp_runtime::{
@@ -76,9 +76,6 @@ use orml_traits::{
 	MultiReservableCurrency, NamedMultiReservableCurrency,
 };
 
-use codec::{Decode, Encode, FullCodec};
-
-// use mangata_types::{Amount, Balance, TokenId};
 pub use multi_token_currency::{MultiTokenCurrencyExtended, MultiTokenReservableCurrency};
 
 pub use multi_token_imbalances::{
@@ -467,8 +464,8 @@ pub mod module {
 	impl<T: Config> Default for GenesisConfig<T> {
 		fn default() -> Self {
 			GenesisConfig {
-				tokens_endowment: vec![],
-				created_tokens_for_staking: vec![],
+				tokens_endowment: Default::default(),
+				created_tokens_for_staking: Default::default(),
 			}
 		}
 	}
@@ -1289,7 +1286,7 @@ impl<T: Config> MultiCurrency<T::AccountId> for Pallet<T> {
 
 		// slash free balance
 		if !free_slashed_amount.is_zero() {
-			// Cannot underflow becuase free_slashed_amount can never be greater than
+			// Cannot underflow because free_slashed_amount can never be greater than
 			// account.free but just to be defensive here.
 			Self::set_free_balance(
 				currency_id,
@@ -1886,7 +1883,9 @@ impl<T: Config> fungibles::Inspect<T::AccountId> for Pallet<T> {
 		let a = Self::accounts(who, asset_id);
 		// Liquid balance is what is neither reserved nor locked/frozen.
 		let liquid = a.free.saturating_sub(a.frozen);
-		if frame_system::Pallet::<T>::can_dec_provider(who) && !matches!(preservation, Preservation::Protect) {
+		if frame_system::Pallet::<T>::can_dec_provider(who)
+			&& !matches!(preservation, Preservation::Protect | Preservation::Preserve)
+		{
 			liquid
 		} else {
 			// `must_remain_to_exist` is the part of liquid balance which must remain to

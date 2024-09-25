@@ -3,79 +3,81 @@ name = "orml-asset-registry"
 description = "Registry for (foreign) assets"
 repository = "https://github.com/open-web3-stack/open-runtime-module-library/tree/master/asset-registry"
 license = "Apache-2.0"
-version = "0.4.1-dev"
+version = "0.9.0"
 authors = ["Interlay Ltd, etc"]
 edition = "2021"
 
 [dependencies]
-log = { version = "0.4.20", default-features = false }
-scale-info = { version = "2.9.0", default-features = false, features = ["derive"] }
-serde = { version = "1.0.136", optional = true }
-codec = { package = "parity-scale-codec", version = "3.0.0", default-features = false, features = ["max-encoded-len"] }
+log = { workspace = true }
+scale-info = { workspace = true }
+serde = { workspace = true, optional = true }
+parity-scale-codec = { workspace = true }
 
 # substrate
-frame-support = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-frame-system = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-sp-io = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-sp-runtime = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-sp-std = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-sp-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop", default-features = false }
-frame-benchmarking = {  git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop", default-features = false , optional = true }
+frame-benchmarking = { workspace = true, optional = true}
+frame-support = { workspace = true }
+frame-system = { workspace = true }
+sp-io = { workspace = true }
+sp-runtime = { workspace = true }
+sp-std = { workspace = true }
+mangata-types = { workspace = true, features = ["serde"]}
 
 # polkadot
-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-xcm = { package = "staging-xcm", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-xcm-builder = { package = "staging-xcm-builder", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-xcm-executor = { package = "staging-xcm-executor", git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-mangata-types = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , features = ["serde"], branch = "eth-rollup-develop" }
+# pallet-xcm = { workspace = true }
+# xcm = { workspace = true }
+# xcm-builder = { workspace = true }
+# xcm-executor = { workspace = true }
 
 # orml
-orml-traits = { path = "../traits", version = "0.4.1-dev", default-features = false }
+orml-traits = { path = "../traits", version = "0.9.0", default-features = false }
+
+# for runtime-benchmarks
+# polkadot-runtime-common = { workspace = true, optional = true }
 
 [dev-dependencies]
 array-bytes = { version = "6.2.0" }
 # substrate
-pallet-balances = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-sp-io = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
-pallet-message-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-
-mangata-support = { git = "https://github.com/mangata-finance/polkadot-sdk", default-features = false , branch = "eth-rollup-develop" }
+pallet-balances = { workspace = true, features = ["std"] }
+sp-core = { workspace = true, features = ["std"] }
+sp-io = { workspace = true, features = ["std"] }
+pallet-message-queue = { workspace = true, features = ["std"] }
 
 # cumulus
-cumulus-primitives-core = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-cumulus-pallet-dmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-cumulus-pallet-xcmp-queue = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-cumulus-pallet-xcm = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-parachain-info = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# cumulus-primitives-core = { workspace = true, features = ["std"] }
+# cumulus-pallet-xcm = { workspace = true, features = ["std"] }
 
 # polkadot
-polkadot-parachain = { package = "polkadot-parachain-primitives", git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-polkadot-runtime-parachains = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
-xcm-simulator = { git = "https://github.com/mangata-finance/polkadot-sdk", branch = "eth-rollup-develop" }
+# polkadot-parachain-primitives = { workspace = true, features = ["std"] }
+# polkadot-runtime-parachains = { workspace = true, features = ["std"] }
+# polkadot-runtime-common = { workspace = true, features = ["std"] }
+# xcm-simulator = { workspace = true }
 
 # orml
 orml-tokens = { path = "../tokens" }
-orml-xcm = { path = "../xcm" }
-orml-xcm-support = { path = "../xcm-support", default-features = false }
-orml-xtokens = { path = "../xtokens" }
+# orml-xcm = { path = "../xcm" }
+# orml-xcm-support = { path = "../xcm-support" }
+# orml-xtokens = { path = "../xtokens" }
+# orml-xcm-mock-message-queue = { path = "../xcm-mock-message-queue" }
 
 [features]
-default = ["std"]
+default = [ "std" ]
 std = [
-	"serde",
-
-	"codec/std",
 	"frame-support/std",
 	"frame-system/std",
 	"frame-benchmarking/std",
+	"log/std",
 	"orml-traits/std",
-	"pallet-xcm/std",
+	# "pallet-xcm/std",
+	# "parity-scale-codec/std",
+	# "polkadot-runtime-common?/std",
 	"scale-info/std",
+	"serde",
+	"sp-io/std",
 	"sp-runtime/std",
 	"sp-std/std",
-	"xcm-builder/std",
-	"xcm-executor/std",
-	"xcm/std",
+	# "xcm-builder/std",
+	# "xcm-executor/std",
+	# "xcm/std",
 	"sp-core/std",
 	"mangata-types/std",
 ]
@@ -83,13 +85,16 @@ runtime-benchmarks = [
 	"frame-benchmarking/runtime-benchmarks",
 	"frame-support/runtime-benchmarks",
 	"frame-system/runtime-benchmarks",
-	"pallet-xcm/runtime-benchmarks",
+	# "pallet-xcm/runtime-benchmarks",
+	# "polkadot-runtime-common/runtime-benchmarks",
 	"sp-runtime/runtime-benchmarks",
-	"xcm-builder/runtime-benchmarks",
-	"xcm-executor/runtime-benchmarks",
+	# "xcm-builder/runtime-benchmarks",
+	# "xcm-executor/runtime-benchmarks",
 ]
 try-runtime = [
 	"frame-support/try-runtime",
 	"frame-system/try-runtime",
-	"pallet-xcm/try-runtime",
+	# "pallet-xcm/try-runtime",
+	# "polkadot-runtime-common?/try-runtime",
+	"sp-runtime/try-runtime",
 ]

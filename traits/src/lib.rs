@@ -1,14 +1,14 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use codec::{Decode, Encode, MaxEncodedLen};
 use impl_trait_for_tuples::impl_for_tuples;
+use parity_scale_codec::{Decode, Encode, MaxEncodedLen};
 use sp_runtime::{DispatchResult, RuntimeDebug};
 use sp_std::{
 	cmp::{Eq, PartialEq},
 	prelude::Vec,
 };
 
-pub use asset_registry::{FixedConversionRateProvider, WeightToFeeConverter};
+// pub use asset_registry::{FixedConversionRateProvider, WeightToFeeConverter};
 pub use auction::{Auction, AuctionHandler, AuctionInfo, OnNewBidResult};
 pub use currency::{
 	BalanceStatus, BasicCurrency, BasicCurrencyExtended, BasicLockableCurrency, BasicReservableCurrency,
@@ -17,14 +17,15 @@ pub use currency::{
 };
 pub use data_provider::{DataFeeder, DataProvider, DataProviderExtended};
 pub use get_by_key::GetByKey;
-pub use multi_asset::ConcreteFungibleAsset;
+// pub use multi_asset::ConcreteFungibleAsset;
 pub use nft::InspectExtended;
 pub use price::{DefaultPriceProvider, PriceProvider};
+pub use rate_limit::{RateLimiter, RateLimiterError};
 pub use rewards::RewardHandler;
 use scale_info::TypeInfo;
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
-pub use xcm_transfer::{XcmTransfer, XtokensWeightInfo};
+// pub use xcm_transfer::{XcmTransfer, XtokensWeightInfo};
 
 pub mod arithmetic;
 pub mod asset_registry;
@@ -32,13 +33,14 @@ pub mod auction;
 pub mod currency;
 pub mod data_provider;
 pub mod get_by_key;
-pub mod location;
-pub mod multi_asset;
+// pub mod location;
+// pub mod multi_asset;
 pub mod nft;
 pub mod parameters;
 pub mod price;
+pub mod rate_limit;
 pub mod rewards;
-pub mod xcm_transfer;
+// pub mod xcm_transfer;
 
 /// New data handler
 #[impl_trait_for_tuples::impl_for_tuples(30)]
