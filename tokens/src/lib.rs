@@ -263,6 +263,9 @@ pub mod module {
 		// The whitelist of accounts that will not be reaped even if its total
 		// is zero or below ED.
 		type DustRemovalWhitelist: Contains<Self::AccountId>;
+
+		/// Tokens which cannot be transfered by extrinsics/user
+		type NontransferableTokens: Contains<Self::CurrencyId>;
 	}
 
 	#[pallet::error]
@@ -285,6 +288,8 @@ pub mod module {
 		TokenIdNotExists,
 		// Number of named reserves exceed `T::MaxReserves`
 		TooManyReserves,
+		// Token cannot be transfered
+		NontransferableToken,
 	}
 
 	#[pallet::event]
@@ -540,6 +545,10 @@ pub mod module {
 			#[pallet::compact] amount: T::Balance,
 		) -> DispatchResult {
 			let from = ensure_signed(origin)?;
+			ensure!(
+				!T::NontransferableTokens::contains(&currency_id),
+				Error::<T>::NontransferableToken
+			);
 			let to = T::Lookup::lookup(dest)?;
 			Self::do_transfer(currency_id, &from, &to, amount, ExistenceRequirement::AllowDeath)
 		}
@@ -572,6 +581,10 @@ pub mod module {
 			keep_alive: bool,
 		) -> DispatchResult {
 			let from = ensure_signed(origin)?;
+			ensure!(
+				!T::NontransferableTokens::contains(&currency_id),
+				Error::<T>::NontransferableToken
+			);
 			let to = T::Lookup::lookup(dest)?;
 			let preservation = if keep_alive {
 				Preservation::Protect
@@ -608,6 +621,10 @@ pub mod module {
 			#[pallet::compact] amount: T::Balance,
 		) -> DispatchResultWithPostInfo {
 			let from = ensure_signed(origin)?;
+			ensure!(
+				!T::NontransferableTokens::contains(&currency_id),
+				Error::<T>::NontransferableToken
+			);
 			let to = T::Lookup::lookup(dest)?;
 			Self::do_transfer(currency_id, &from, &to, amount, ExistenceRequirement::KeepAlive)?;
 			Ok(().into())
@@ -632,6 +649,10 @@ pub mod module {
 			#[pallet::compact] amount: T::Balance,
 		) -> DispatchResult {
 			ensure_root(origin)?;
+			ensure!(
+				!T::NontransferableTokens::contains(&currency_id),
+				Error::<T>::NontransferableToken
+			);
 			let from = T::Lookup::lookup(source)?;
 			let to = T::Lookup::lookup(dest)?;
 			Self::do_transfer(currency_id, &from, &to, amount, ExistenceRequirement::AllowDeath)
@@ -655,6 +676,10 @@ pub mod module {
 			#[pallet::compact] new_reserved: T::Balance,
 		) -> DispatchResult {
 			ensure_root(origin)?;
+			ensure!(
+				!T::NontransferableTokens::contains(&currency_id),
+				Error::<T>::NontransferableToken
+			);
 			let who = T::Lookup::lookup(who)?;
 
 			Self::try_mutate_account(&who, currency_id, |account, _| -> DispatchResult {
@@ -721,6 +746,10 @@ pub mod module {
 			#[pallet::compact] amount: T::Balance,
 		) -> DispatchResultWithPostInfo {
 			ensure_root(origin)?;
+			ensure!(
+				!T::NontransferableTokens::contains(&currency_id),
+				Error::<T>::NontransferableToken
+			);
 			let who = T::Lookup::lookup(who)?;
 			MultiTokenCurrencyAdapter::<T>::mint(currency_id, &who, amount)?;
 			Self::deposit_event(Event::Minted(currency_id, who, amount));
