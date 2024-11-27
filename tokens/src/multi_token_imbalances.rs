@@ -34,12 +34,6 @@ impl<T: Config> PositiveImbalance<T> {
 	}
 }
 
-impl<T: Config> Default for PositiveImbalance<T> {
-	fn default() -> Self {
-		fail!("PositiveImbalance::default cannnot be implemented properly because of currency id");
-	}
-}
-
 /// Opaque, move-only struct with private fields that serves as a token
 /// denoting that funds have been destroyed without any equal and opposite
 /// accounting.
@@ -54,12 +48,6 @@ impl<T: Config> NegativeImbalance<T> {
 
 	pub fn zero(currency_id: T::CurrencyId) -> Self {
 		NegativeImbalance(currency_id, Zero::zero())
-	}
-}
-
-impl<T: Config> Default for NegativeImbalance<T> {
-	fn default() -> Self {
-		fail!("NegativeImbalance::default cannnot be implemented properly because of currency id");
 	}
 }
 
