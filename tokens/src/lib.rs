@@ -266,6 +266,9 @@ pub mod module {
 
 		/// Tokens which cannot be transfered by extrinsics/user
 		type NontransferableTokens: Contains<Self::CurrencyId>;
+
+		/// Accounts which can override transferablity
+		type NontransferableTokensAllowList: Contains<Self::AccountId>;
 	}
 
 	#[pallet::error]
@@ -546,7 +549,7 @@ pub mod module {
 		) -> DispatchResult {
 			let from = ensure_signed(origin)?;
 			ensure!(
-				!T::NontransferableTokens::contains(&currency_id),
+				!T::NontransferableTokens::contains(&currency_id) || T::NontransferableTokensAllowList::contains(&from),
 				Error::<T>::NontransferableToken
 			);
 			let to = T::Lookup::lookup(dest)?;
@@ -582,7 +585,7 @@ pub mod module {
 		) -> DispatchResult {
 			let from = ensure_signed(origin)?;
 			ensure!(
-				!T::NontransferableTokens::contains(&currency_id),
+				!T::NontransferableTokens::contains(&currency_id) || T::NontransferableTokensAllowList::contains(&from),
 				Error::<T>::NontransferableToken
 			);
 			let to = T::Lookup::lookup(dest)?;
@@ -622,7 +625,7 @@ pub mod module {
 		) -> DispatchResultWithPostInfo {
 			let from = ensure_signed(origin)?;
 			ensure!(
-				!T::NontransferableTokens::contains(&currency_id),
+				!T::NontransferableTokens::contains(&currency_id) || T::NontransferableTokensAllowList::contains(&from),
 				Error::<T>::NontransferableToken
 			);
 			let to = T::Lookup::lookup(dest)?;
@@ -649,11 +652,11 @@ pub mod module {
 			#[pallet::compact] amount: T::Balance,
 		) -> DispatchResult {
 			ensure_root(origin)?;
+			let from = T::Lookup::lookup(source)?;
 			ensure!(
-				!T::NontransferableTokens::contains(&currency_id),
+				!T::NontransferableTokens::contains(&currency_id) || T::NontransferableTokensAllowList::contains(&from),
 				Error::<T>::NontransferableToken
 			);
-			let from = T::Lookup::lookup(source)?;
 			let to = T::Lookup::lookup(dest)?;
 			Self::do_transfer(currency_id, &from, &to, amount, ExistenceRequirement::AllowDeath)
 		}
