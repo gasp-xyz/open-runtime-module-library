@@ -266,9 +266,6 @@ pub mod module {
 
 		/// Tokens which cannot be transfered by extrinsics/user
 		type NontransferableTokens: Contains<Self::CurrencyId>;
-
-		/// Tokens which cannot be transfered by extrinsics/user
-		type NontransferableTokensAllowList: Contains<Self::CurrencyId>;
 	}
 
 	#[pallet::error]
